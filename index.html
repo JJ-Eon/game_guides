@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IF Game Guides</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #fafafa;
+            --container-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #666666;
+            --link-color: #0ea5e9;
+            --border-color: #e5e7eb;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-size: 18px;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --link-color: #38bdf8;
+            --border-color: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-font="serif"] {
+            --font-family: 'Merriweather', Georgia, 'Times New Roman', serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px 16px;
+            }
+        }
+
+        .site-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .site-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+        
+        @media (max-width: 768px) {
+            .site-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .search-container {
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .search-wrapper { position: relative; }
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+        }
+        #search-bar {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            font-size: 1.05rem;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            background: var(--container-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+        #search-bar:focus {
+            outline: none;
+            border-color: var(--link-color);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+
+        #guide-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 480px) {
+            #guide-list {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        .game-card {
+            background: var(--container-bg);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--link-color);
+        }
+        .game-card h2 {
+            font-size: 1.25rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--link-color);
+            line-height: 1.3;
+        }
+        .game-card .author {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .top-nav {
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            background: var(--bg-color);
+            padding: 1rem 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            text-decoration: none;
+            padding: 8px 12px;
+            margin-left: -12px;
+            border-radius: 8px;
+            min-height: 44px;
+        }
+        .back-link:hover { color: var(--link-color); background: rgba(14, 165, 233, 0.05); }
+        .back-link svg { width: 20px; height: 20px; }
+
+        #content {
+            max-width: 70ch;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+        #content h1, #content h2, #content h3 {
+            color: var(--text-color);
+            margin-top: 2em;
+            margin-bottom: 0.75em;
+            font-weight: 700;
+        }
+        #content h1 { font-size: 2.5rem; margin-top: 0; line-height: 1.2; }
+        #content h2 { font-size: 1.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
+        
+        @media (max-width: 768px) {
+            #content h1 { font-size: 2rem; }
+            #content h2 { font-size: 1.5rem; }
+            #content h3 { font-size: 1.25rem; }
+            #content { padding-bottom: 120px; }
+        }
+
+        #content p { margin-bottom: 1.5em; }
+        #content a { color: var(--link-color); text-decoration: underline; text-underline-offset: 4px; }
+        #content a:hover { color: var(--text-color); }
+        #content pre {
+            background: var(--container-bg);
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        #content code {
+            background: var(--container-bg);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: var(--font-mono, monospace);
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+        }
+        #content pre code { border: none; padding: 0; background: transparent; }
+        #content blockquote {
+            border-left: 4px solid var(--link-color);
+            margin: 1.5em 0;
+            padding: 0.5em 0 0.5em 1.5rem;
+            color: var(--text-muted);
+            font-style: italic;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+        #content img { max-width: 100%; border-radius: var(--radius); height: auto; }
+        #content hr { border: 0; border-top: 1px solid var(--border-color); margin: 2em 0; }
+
+        .settings-toggle { position: fixed; bottom: 30px; right: 30px; z-index: 100; }
+        
+        @media (max-width: 768px) {
+            .settings-toggle { bottom: 20px; right: 20px; }
+        }
+
+        #settings-btn {
+            background: var(--container-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-hover);
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #settings-btn:hover { transform: scale(1.05); }
+        
+        .settings-panel {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 280px;
+            max-width: calc(100vw - 40px);
+            z-index: 99;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (max-width: 768px) {
+            .settings-panel {
+                bottom: 90px;
+                right: 20px;
+                padding: 20px;
+            }
+        }
+
+        .settings-panel.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .settings-group { margin-bottom: 20px; }
+        .settings-group:last-child { margin-bottom: 0; }
+        .settings-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+        .control-row { display: flex; gap: 8px; }
+        .control-row button, .full-width-btn {
+            flex: 1;
+            padding: 10px;
+            min-height: 44px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .control-row button:hover, .full-width-btn:hover {
+            background: var(--border-color);
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .view.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading-text { color: var(--text-muted); text-align: center; padding: 3rem; font-style: italic; }
+        .error-state { text-align: center; padding: 4rem 1rem; background: var(--container-bg); border-radius: var(--radius); border: 1px solid var(--border-color); }
+        .error-state h1 { color: #ef4444; margin-top: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div id="view-home" class="view active">
+            <header class="site-header">
+                <h1>Interactive Fiction Archives</h1>
+                <p class="subtitle">A curated collection of guides and walkthroughs</p>
+            </header>
+            
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="search-bar" placeholder="Search for a guide or author..." aria-label="Search guides">
+                </div>
+            </div>
+
+            <nav id="guide-list" aria-label="Guide List">
+            </nav>
+        </div>
+
+        <div id="view-guide" class="view">
+            <nav class="top-nav">
+                <a href="#" class="back-link" onclick="goHome(event)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Return to Library
+                </a>
+            </nav>
+            <main>
+                <article id="content">
+                    <p class="loading-text">Retrieving manuscript...</p>
+                </article>
+            </main>
+        </div>
+
+    </div>
+
+    <div class="settings-toggle">
+        <button id="settings-btn" aria-label="Reader Settings" title="Reader Settings">Aa</button>
+    </div>
+    <div id="settings-panel" class="settings-panel" role="dialog" aria-label="Reader Settings Panel">
+        <div class="settings-group">
+            <label>Theme</label>
+            <button id="theme-toggle" class="full-width-btn">🌙 Dark Mode</button>
+        </div>
+        <div class="settings-group">
+            <label>Text Size</label>
+            <div class="control-row">
+                <button id="text-decrease" aria-label="Decrease text size">A-</button>
+                <button id="text-increase" aria-label="Increase text size">A+</button>
+            </div>
+        </div>
+        <div class="settings-group">
+            <label>Font Style</label>
+            <div class="control-row">
+                <button id="font-serif" aria-label="Use serif font">Serif</button>
+                <button id="font-sans" aria-label="Use sans-serif font">Sans</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allGuides = [];
+
+        let basePath = window.location.pathname;
+        if (basePath.endsWith('.html')) {
+            basePath = basePath.substring(0, basePath.lastIndexOf('/'));
+        }
+        if (!basePath.endsWith('/')) {
+            basePath += '/';
+        }
+
+        function handleRoute() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#guide=')) {
+                const gameId = hash.split('=')[1];
+                showGuideView(gameId);
+            } else {
+                showHomeView();
+            }
+        }
+
+        function goHome(e) {
+            if (e) e.preventDefault();
+            window.location.hash = '';
+        }
+
+        function showHomeView() {
+            document.getElementById('view-guide').classList.remove('active');
+            document.getElementById('view-home').classList.add('active');
+            renderGuides(allGuides);
+            document.getElementById('search-bar').value = '';
+        }
+
+        function showGuideView(gameId) {
+            document.getElementById('view-home').classList.remove('active');
+            document.getElementById('view-guide').classList.add('active');
+            
+            const contentEl = document.getElementById('content');
+            contentEl.innerHTML = '<p class="loading-text">Retrieving manuscript...</p>';
+
+            fetch(basePath + 'content/' + gameId + '.md')
+                .then(response => {
+                    if (!response.ok) throw new Error("Guide not found");
+                    return response.text();
+                })
+                .then(text => {
+                    try {
+                        const html = typeof marked.parse === 'function' ? marked.parse(text) : marked(text);
+                        contentEl.innerHTML = html;
+                    } catch (e) {
+                        console.error("Markdown parsing error:", e);
+                        contentEl.innerHTML = "<div class='error-state'><h1>Parsing Error</h1><p>Could not format the manuscript.</p><pre>" + text + "</pre></div>";
+                    }
+                })
+                .catch(err => {
+                    console.error("Fetch error:", err);
+                    contentEl.innerHTML = "<div class='error-state'><h1>Manuscript Not Found</h1><p>The requested guide could not be located in the archives.</p></div>";
+                });
+        }
+
+        function renderGuides(guides) {
+            const list = document.getElementById('guide-list');
+            if (guides.length === 0) {
+                list.innerHTML = '<p class="loading-text">No manuscripts found matching your search.</p>';
+                return;
+            }
+            
+            list.innerHTML = guides.map(game => `
+                <a href="#guide=${game.id}" class="game-card">
+                    <h2>${game.title}</h2>
+                    <div class="author">By ${game.author || 'Unknown'}</div>
+                </a>
+            `).join('');
+        }
+
+        document.getElementById('search-bar').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredGuides = allGuides.filter(game => 
+                game.title.toLowerCase().includes(searchTerm) || 
+                (game.author && game.author.toLowerCase().includes(searchTerm))
+            );
+            renderGuides(filteredGuides);
+        });
+
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsPanel = document.getElementById('settings-panel');
+        const themeToggle = document.getElementById('theme-toggle');
+        const textIncrease = document.getElementById('text-increase');
+        const textDecrease = document.getElementById('text-decrease');
+        const fontSerif = document.getElementById('font-serif');
+        const fontSans = document.getElementById('font-sans');
+
+        let currentFontSize = 16;
+
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) {
+                settingsPanel.classList.remove('active');
+            }
+        });
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.body.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙 Dark Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        textIncrease.addEventListener('click', () => {
+            if (currentFontSize < 24) {
+                currentFontSize += 2;
+                document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+                localStorage.setItem('fontSize', currentFontSize);
+            }
+        });
+
+        textDecrease.addEventListener('click', () => {
+            if (currentFontSize > 12) {
+                currentFontSize -= 2;
+                document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+                localStorage.setItem('fontSize', currentFontSize);
+            }
+        });
+
+        fontSerif.addEventListener('click', () => {
+            document.body.setAttribute('data-font', 'serif');
+            localStorage.setItem('font', 'serif');
+        });
+
+        fontSans.addEventListener('click', () => {
+            document.body.setAttribute('data-font', 'sans');
+            localStorage.setItem('font', 'sans');
+        });
+
+        function loadSettings() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light Mode';
+            }
+
+            const savedFontSize = localStorage.getItem('fontSize');
+            if (savedFontSize) {
+                currentFontSize = parseInt(savedFontSize);
+                document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+            }
+
+            const savedFont = localStorage.getItem('font');
+            if (savedFont) {
+                document.body.setAttribute('data-font', savedFont);
+            }
+        }
+
+        loadSettings();
+        
+        fetch(basePath + 'guides.json')
+            .then(response => {
+                if (!response.ok) throw new Error("Could not load guides.json");
+                return response.json();
+            })
+            .then(data => {
+                allGuides = data;
+                window.addEventListener('hashchange', handleRoute);
+                handleRoute();
+            })
+            .catch(err => {
+                console.error("Error loading guides:", err);
+                document.getElementById('guide-list').innerHTML = '<div class="error-state"><h2>Error</h2><p>Could not load the guide directory.</p></div>';
+            });
+
+    </script>
+</body>
+</html>
